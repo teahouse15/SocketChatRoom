@@ -8,13 +8,13 @@
 ***
 ###########目录结构描述
 src  
-|-- client  
+|-- client 客户端   
 |  |-- main  
 |  |-- service  
-|-- server  
+|-- server 服务端  
 |  |-- main  
 |  |-- service  
-|-- utils  
+|-- utils 工具类  
 ***
 ### 将会被实现的功能
 - [x] 服务器与多客户端通信
