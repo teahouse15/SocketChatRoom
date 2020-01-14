@@ -1,6 +1,5 @@
 # Socket-ChatWithMe
 
-***
 > 菜鸟第二个项目
 ## V1.0
 一直都很想写一个能支持局域网内聊天的项目，Socket-ChatWithMe就是这个
