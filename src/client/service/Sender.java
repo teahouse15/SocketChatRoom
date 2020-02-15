@@ -20,6 +20,8 @@ public class Sender implements Runnable {
             Connector.dataOutputStream.writeUTF(message);
             if (!message.equals("")) {
                 GUI.receiveArea.append("[" + TimeManager.nowTime() + "][CHAT][Client] " + message + "\r\n");
+                System.out.println(GUI.jOptionPane.getMessageType());
+                System.out.println(GUI.jOptionPane.getOptionType());
             }
         } catch (IOException e) {
             System.out.println("发送失败");

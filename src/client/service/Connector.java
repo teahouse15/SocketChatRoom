@@ -4,9 +4,7 @@ import client.main.Definer;
 import client.main.GUI;
 import utlis.TimeManager;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -14,7 +12,6 @@ public class Connector implements Runnable{
 
     public static DataInputStream dataInputStream;
     public static DataOutputStream dataOutputStream;
-
 
     @Override
     public void run() {

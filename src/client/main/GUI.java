@@ -3,6 +3,9 @@ package client.main;
 import client.service.Connector;
 import client.service.Receiver;
 import client.service.Sender;
+import utlis.ClientUtils;
+import utlis.SendFile;
+import utlis.ServerUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +23,33 @@ public class GUI extends JFrame {
 
 
 
+    JMenuBar menuBar = new JMenuBar();
 
+    JMenu menuOperation = new JMenu("操作");
+    JMenu menuFunction = new JMenu("功能");
+    JMenu menuHelp = new JMenu("帮助");
+
+    JMenuItem operationConn = new JMenuItem("连接");
+    JMenuItem operationDisConn = new JMenuItem("断开");
+
+    JMenuItem functionFileTransmit = new JMenuItem("发送文件");
+
+    JMenuItem helpGetHelp = new JMenuItem("获取帮助");
+    JMenuItem helpAbout = new JMenuItem("关于");
+    JMenuItem helpVersion = new JMenuItem("(Client) 版本: 1.2");
+
+
+
+
+    public static JOptionPane jOptionPane = new JOptionPane();
     JTextField message = new JTextField();
     JButton connect = new JButton("发送");
     public static JTextArea receiveArea = new JTextArea();
     public static JLabel label = new JLabel();
 
     JScrollPane jsp = new JScrollPane();
+    // 文件选择
+    public static JFileChooser fileChooser = new JFileChooser();
 
     // 初始化窗口
     public void initFrame() {
@@ -34,7 +57,7 @@ public class GUI extends JFrame {
         this.setTitle("Client");
         this.setLayout(null);
         // 设置窗口大小
-        this.setSize(625, 500);
+        this.setSize(625, 515);
         this.setLocation(screenSize.width/2 - 625/2, screenSize.height/2 - 430/2);
         // 窗口居中
 
@@ -58,10 +81,39 @@ public class GUI extends JFrame {
         label.setFont(new Font("宋体", Font.PLAIN, 15));
         label.setBounds(20, 420, 300, 20);
 
+
+        operationConn.addActionListener(new ItemListener());
+        operationDisConn.addActionListener(new ItemListener());
+        functionFileTransmit.addActionListener(new ItemListener());
+        helpGetHelp.addActionListener(new ItemListener());
+        helpAbout.addActionListener(new ItemListener());
+        helpVersion.addActionListener(new ItemListener());
+
+
+
+
+        menuOperation.add(operationConn);
+        menuOperation.add(operationDisConn);
+
+        menuFunction.add(functionFileTransmit);
+
+        menuHelp.add(helpGetHelp);
+        menuHelp.add(helpAbout);
+        menuHelp.add(helpVersion);
+
+        menuBar.add(menuOperation);
+        menuBar.add(menuFunction);
+        menuBar.add(menuHelp);
+
+
+
+
+
         this.add(label);
         this.add(message);
         this.add(connect);
         this.add(jsp);
+        this.setJMenuBar(menuBar);
 
 
         String port = JOptionPane.showInputDialog("请输入服务器地址(127.0.0.1:9999): ");
@@ -111,7 +163,7 @@ public class GUI extends JFrame {
 
 
             message.setText("");
-
+            
             return false;
         } else {
             return true;
@@ -121,7 +173,7 @@ public class GUI extends JFrame {
 
 
     // 重写事件监听
-    class Listener implements ActionListener, KeyListener {
+    private class Listener implements ActionListener, KeyListener {
 
 
         @Override
@@ -139,7 +191,9 @@ public class GUI extends JFrame {
         }
 
         @Override
-        public void keyTyped(KeyEvent e) { }
+        public void keyTyped(KeyEvent e) {
+
+        }
 
         @Override
         public void keyPressed(KeyEvent e) {
@@ -154,6 +208,36 @@ public class GUI extends JFrame {
         }
 
         @Override
-        public void keyReleased(KeyEvent e) { }
+        public void keyReleased(KeyEvent e) {
+
+        }
+    }
+
+    private class ItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JMenuItem menuItem = (JMenuItem) e.getSource();
+            switch (menuItem.getText()) {
+                case "连接":
+                    ClientUtils.connect();
+                    break;
+                case "断开":
+                    ClientUtils.disconnect();
+                    break;
+                case "发送文件":
+                    if (server.service.ReceiverPool.flag) {
+                        System.out.println("服务器正在发送文件");
+                    } else {
+                        SendFile.selectFile("client");
+                    }
+                    break;
+                case "获取帮助":
+                    ServerUtils.getHelp();
+                    break;
+                case "关于":
+                    ServerUtils.about();
+                    break;
+            }
+        }
     }
 }

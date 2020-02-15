@@ -1,25 +1,49 @@
 package server.main;
 
 import server.service.Networker;
+import utlis.SendFile;
+import utlis.ServerUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 public class GUI extends JFrame {
 
     private Toolkit toolkit = Toolkit.getDefaultToolkit();
     private Dimension screenSize = toolkit.getScreenSize();
 
+    JMenuBar menuBar =new JMenuBar();
+    JMenu menuMode = new JMenu("模式(M)");
+    JMenu menuFunction = new JMenu("功能(F)");
+    JMenu menuHelp = new JMenu("帮助(H)");
+
+    // menuMode
+    JMenuItem modeSolo = new JMenuItem("私聊");
+    JMenuItem modeGroupChat = new JMenuItem("群聊");
+
+    // menuFunction
+    JMenuItem functionFileTransmit = new JMenuItem("发送文件");
+
+    // menuHelp
+    JMenuItem helpGetHelp = new JMenuItem("获取帮助");
+    JMenuItem helpAbout = new JMenuItem("关于");
+    JMenuItem helpVersion = new JMenuItem("(Server) 版本: 1.2");
 
 
+
+
+    // 对话窗口
     JTextField message = new JTextField();
+    // 发送按钮
     JButton send = new JButton("发送");
     public static JTextArea receiveArea = new JTextArea();
     JScrollPane jsp = new JScrollPane();
+
+    // 文件选择
+    public static JFileChooser fileChooser = new JFileChooser();
+    public static JOptionPane jOptionPane = new JOptionPane();
+
 
     // 初始化窗口
     public void initFrame() {
@@ -27,7 +51,7 @@ public class GUI extends JFrame {
         this.setTitle("Server");
         this.setLayout(null);
         // 设置窗口大小
-        this.setSize(625, 470);
+        this.setSize(625, 490);
         this.setLocation(screenSize.width/2 - 625/2, screenSize.height/2 - 430/2);
         // 窗口居中
 
@@ -46,9 +70,31 @@ public class GUI extends JFrame {
         jsp.setBounds(5, 60, 595, 350);
         jsp.setViewportView(receiveArea);
 
+        modeSolo.addActionListener(new ItemListener());
+        modeGroupChat.addActionListener(new ItemListener());
+        functionFileTransmit.addActionListener(new ItemListener());
+        helpGetHelp.addActionListener(new ItemListener());
+        helpAbout.addActionListener(new ItemListener());
+        helpVersion.addActionListener(new ItemListener());
+
+        menuMode.add(modeSolo);
+        menuMode.add(modeGroupChat);
+
+        menuFunction.add(functionFileTransmit);
+
+        menuHelp.add(helpGetHelp);
+        menuHelp.add(helpAbout);
+        menuHelp.add(helpVersion);
+
+        menuBar.add(menuMode);
+        menuBar.add(menuFunction);
+        menuBar.add(menuHelp);
+
+
         this.add(message);
         this.add(send);
         this.add(jsp);
+        this.setJMenuBar(menuBar);
 
 
 
@@ -74,7 +120,7 @@ public class GUI extends JFrame {
 
 
 
-    class Listener implements ActionListener, KeyListener {
+    private class Listener implements ActionListener, KeyListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -98,6 +144,35 @@ public class GUI extends JFrame {
         @Override
         public void keyReleased(KeyEvent e) {
 
+        }
+    }
+
+
+    private class ItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JMenuItem menuItem = (JMenuItem) e.getSource();
+            switch (menuItem.getText()) {
+                case "私聊":
+                    ServerUtils.solo();
+                    break;
+                case "群聊":
+                    ServerUtils.groupChat();
+                    break;
+                case "发送文件":
+                    if (client.service.Receiver.flag) {
+                        System.out.println("客户端正在发送文件");
+                    } else {
+                        SendFile.selectFile("server");
+                    }
+                    break;
+                case "获取帮助":
+                    ServerUtils.getHelp();
+                    break;
+                case "关于":
+                    ServerUtils.about();
+                    break;
+            }
         }
     }
 }

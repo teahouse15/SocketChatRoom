@@ -24,7 +24,7 @@ public class StartSending extends Thread{
         try {
             // 改一下
 //            inputList.add(new DataInputStream(socket.getInputStream()));
-            receiverPool = new ReceiverPool(new DataInputStream(socket.getInputStream()), socket);
+            receiverPool = new ReceiverPool(new DataOutputStream(socket.getOutputStream()), new DataInputStream(socket.getInputStream()), socket);
             inputList.add(receiverPool.dataInputStream);
 
             new Thread(receiverPool).start();
@@ -45,6 +45,7 @@ public class StartSending extends Thread{
 
     // 发送信息 和 断开连接合并
     public void printer(String message) {
+        System.out.println(Networker.address);
         if (!message.equals("")) {
             GUI.receiveArea.append("[" + TimeManager.nowTime() + "][CHAT][Server] " + message + "\r\n");
             List<DataOutputStream> closedStreamList = new ArrayList<>();
@@ -56,8 +57,6 @@ public class StartSending extends Thread{
                 }
             }
             outputList.removeAll(closedStreamList);
-        } else {
-//            GUI.receiveArea.append("[Notice][Server] 空内容无法发送\r\n");
         }
     }
 }
